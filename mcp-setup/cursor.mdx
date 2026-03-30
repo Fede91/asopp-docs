@@ -1,0 +1,96 @@
+---
+title: "Cursor"
+description: "Connect ASO++ to Cursor using the built-in MCP configuration."
+sidebarTitle: "Cursor"
+---
+
+[Cursor](https://cursor.sh) supports MCP servers natively. You configure them in a JSON file and they're available to all AI features in the editor.
+
+## Prerequisites
+
+- Cursor 0.43 or later
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open MCP settings">
+    In Cursor, open the Command Palette (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` on Windows/Linux) and run **Cursor: Open MCP Configuration**.
+
+    This opens `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` inside your project (project-level).
+
+  </Step>
+
+  <Step title="Add the ASO++ server">
+    Add the following entry to the `mcpServers` object:
+
+    ```json
+    {
+      "mcpServers": {
+        "asopp": {
+          "url": "https://asopp.cc/mcp",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN_HERE"
+          }
+        }
+      }
+    }
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+<Step title="Reload Cursor">
+  Press `Cmd+R` (macOS) or `Ctrl+R` (Windows/Linux), or reopen the window.
+  Cursor re-reads the MCP configuration on startup.
+</Step>
+
+  <Step title="Verify the connection">
+    Open a new chat in Cursor Agent mode and type:
+
+    ```text
+    Search for keywords related to "photo editor" in the US App Store
+    ```
+
+    Cursor should call `search_keywords` and return results.
+
+  </Step>
+</Steps>
+
+## Using environment variables
+
+To avoid hardcoding your token, use Cursor's environment variable support:
+
+```json
+{
+  "mcpServers": {
+    "asopp": {
+      "url": "https://asopp.cc/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ASO_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Then set `ASO_TOKEN` in your shell profile (`~/.zshrc` or `~/.bashrc`) and restart Cursor.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Tools don't appear in Cursor's tool list">
+    Open the MCP panel in Cursor settings and check for a connection error.
+    Verify your token is active on the [Tokens page](/portal/tokens).
+  </Accordion>
+  <Accordion title="Cursor uses a cached version of the tool list">
+    Restart Cursor fully (not just the window reload) to force a re-fetch of the
+    MCP server's tool manifest.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

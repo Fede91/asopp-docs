@@ -1,0 +1,69 @@
+---
+title: "Factory"
+description: "Connect ASO++ to Factory as an MCP integration."
+sidebarTitle: "Factory"
+---
+
+[Factory](https://factory.ai) is an AI software engineering platform that automates development workflows. You can add ASO++ as an MCP integration so Factory's Droids can call ASO data directly during app-related tasks.
+
+## Prerequisites
+
+- A Factory account with a Droid configured
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open your Droid settings">
+    In the Factory dashboard, navigate to your Droid's configuration page and open the **Integrations** tab.
+  </Step>
+
+  <Step title="Add an MCP integration">
+    Click **Add integration → MCP server** and fill in the details:
+
+    | Field | Value |
+    |-------|-------|
+    | Name | `asopp` |
+    | URL | `https://asopp.cc/mcp` |
+    | Transport | `SSE` |
+    | Auth header | `Authorization: Bearer YOUR_TOKEN_HERE` |
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+<Step title="Save and activate">
+  Click **Save**. The integration is activated immediately — your Droid can now
+  call ASO++ tools in workflows.
+</Step>
+
+  <Step title="Verify in a workflow">
+    Create a test workflow or open a session with your Droid and type:
+
+    ```text
+    Run an ASO audit for app 389801252 and summarize the top 5 recommendations
+    ```
+
+    The Droid should call `aso_audit` and return structured recommendations.
+
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Integration shows as disconnected">
+    Click **Test connection** in the Factory integration settings. If the test
+    fails, verify your token on the [Tokens page](/portal/tokens) and check the
+    URL is exactly `https://asopp.cc/mcp`.
+  </Accordion>
+  <Accordion title="Tools not available in workflows">
+    Factory may need to re-fetch the tool manifest after adding the integration.
+    Deactivate and re-activate the integration from the settings panel.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

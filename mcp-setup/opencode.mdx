@@ -1,0 +1,90 @@
+---
+title: "OpenCode"
+description: "Connect ASO++ to OpenCode using the MCP server configuration."
+sidebarTitle: "OpenCode"
+---
+
+[OpenCode](https://github.com/sst/opencode) is an open-source terminal AI coding agent built by SST. It supports MCP servers via a `opencode.json` configuration file.
+
+## Prerequisites
+
+- OpenCode installed — follow the [official install guide](https://github.com/sst/opencode)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open the OpenCode config file">
+    OpenCode looks for `opencode.json` in your home directory (`~/opencode.json`) or in the current project directory (`.opencode.json`).
+
+    Create the file if it doesn't exist:
+
+    ```bash
+    touch ~/opencode.json
+    ```
+
+  </Step>
+
+  <Step title="Add the ASO++ MCP server">
+    Edit `~/opencode.json` and add:
+
+    ```json
+    {
+      "mcp": {
+        "asopp": {
+          "type": "remote",
+          "url": "https://asopp.cc/mcp",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN_HERE"
+          }
+        }
+      }
+    }
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+  <Step title="Start a session and verify">
+    Run:
+
+    ```bash
+    opencode
+    ```
+
+    Then type:
+
+    ```text
+    Get the App Store ranking for app 389801252 for keyword "photo editor" in the US
+    ```
+
+    OpenCode should call `get_app_ranking` and return the rank.
+
+  </Step>
+</Steps>
+
+## Project-scoped configuration
+
+For project-specific setups, create a `.opencode.json` file in your project root. This is useful when working on multiple apps that each need different ASO++ tokens or configurations.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="OpenCode doesn't recognize the ASO++ tools">
+    Confirm the JSON in your config file is valid. You can validate it with:
+
+    ```bash
+    cat ~/opencode.json | python3 -m json.tool
+    ```
+
+  </Accordion>
+  <Accordion title="Connection errors at startup">
+    Check that your token is active on the [Tokens page](/portal/tokens). If the token was revoked, create a new one and update the config file.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

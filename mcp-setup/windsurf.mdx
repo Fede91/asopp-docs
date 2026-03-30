@@ -1,0 +1,77 @@
+---
+title: "Windsurf"
+description: "Connect ASO++ to Windsurf using the Cascade MCP configuration."
+sidebarTitle: "Windsurf"
+---
+
+[Windsurf](https://codeium.com/windsurf) by Codeium is an AI-first editor with a built-in AI agent called Cascade. Cascade supports MCP servers via a JSON configuration file.
+
+## Prerequisites
+
+- Windsurf (any current version)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open MCP configuration">
+    In Windsurf, open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) and run **Windsurf: Open MCP Config**.
+
+    This opens `~/.codeium/windsurf/mcp_config.json`.
+
+  </Step>
+
+  <Step title="Add the ASO++ server">
+    Add the following to the `mcpServers` object:
+
+    ```json
+    {
+      "mcpServers": {
+        "asopp": {
+          "serverUrl": "https://asopp.cc/mcp",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN_HERE"
+          }
+        }
+      }
+    }
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+<Step title="Reload Windsurf">
+  Press `Cmd+Shift+P` and run **Developer: Reload Window** to apply the new
+  configuration.
+</Step>
+
+  <Step title="Verify in Cascade">
+    Open a Cascade chat and type:
+
+    ```text
+    Get the App Store details for app 389801252 in the US
+    ```
+
+    Cascade should call `get_app_details` and return the app's metadata.
+
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Cascade doesn't list the ASO++ tools">
+    Open **Windsurf Settings → MCP** and check the server status. A red
+    indicator means the connection failed — verify your token and URL.
+  </Accordion>
+  <Accordion title="Tool calls fail silently">
+    Check the Windsurf output panel for MCP errors. A `401` means your token is
+    invalid; a `429` means you've exceeded your quota.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

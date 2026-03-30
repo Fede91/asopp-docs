@@ -1,0 +1,77 @@
+---
+title: "Goose"
+description: "Connect ASO++ to Goose using the MCP extension configuration."
+sidebarTitle: "Goose"
+---
+
+[Goose](https://block.github.io/goose/) is Block's open-source AI agent. It uses an extension system where MCP servers are registered as extensions.
+
+## Prerequisites
+
+- Goose installed — follow the [official install guide](https://block.github.io/goose/docs/getting-started/installation)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open the Goose config file">
+    The Goose configuration lives at `~/.config/goose/config.yaml`. Create it if it doesn't exist.
+  </Step>
+
+  <Step title="Add the ASO++ extension">
+    Add the following to your `config.yaml`:
+
+    ```yaml
+    extensions:
+      asopp:
+        type: remote
+        uri: https://asopp.cc/mcp
+        transport: sse
+        headers:
+          Authorization: "Bearer YOUR_TOKEN_HERE"
+        enabled: true
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+  <Step title="Start a Goose session">
+    Run:
+
+    ```bash
+    goose session
+    ```
+
+    Type a prompt to test the connection:
+
+    ```text
+    Search for App Store keywords related to "meditation" in the US
+    ```
+
+    Goose should call `search_keywords` and return a list of relevant keywords.
+
+  </Step>
+</Steps>
+
+## Verifying the extension is loaded
+
+Run `goose session` and type `/extensions` to list all loaded extensions. You should see `asopp` with a `connected` status.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Extension not found or not connected">
+    Check the YAML indentation in `~/.config/goose/config.yaml` — YAML is
+    whitespace-sensitive. Use 2-space indentation throughout.
+  </Accordion>
+  <Accordion title="Authentication errors">
+    Verify your token is active on the [Tokens page](/portal/tokens). Update the
+    `Authorization` header in `config.yaml` with a fresh token.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

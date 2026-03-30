@@ -1,0 +1,80 @@
+---
+title: "Tokens"
+description: "Create and manage the API tokens that authenticate your MCP clients."
+---
+
+API tokens let your MCP clients authenticate with ASO++. Each token is independent — you can create one per tool, environment, or team member, and revoke any of them without affecting the others.
+
+## Creating a token
+
+<Steps>
+  <Step title="Open the Tokens page">
+    Click **Tokens** in the sidebar, then click **New token**.
+  </Step>
+
+  <Step title="Name your token">
+    Give the token a descriptive name that reminds you where it's used — for example, `cursor-work`, `claude-code-laptop`, or `ci-pipeline`.
+
+    Token names must be unique within your account and can be up to 64 characters.
+
+  </Step>
+
+  <Step title="Copy your token">
+    After clicking **Create**, the full token value is displayed once. Copy it immediately and store it somewhere secure — a password manager or your tool's secrets storage.
+
+    <Warning>
+      ASO++ never displays the raw token value again after this screen. If you lose it, revoke the token and create a new one.
+    </Warning>
+
+  </Step>
+</Steps>
+
+## Using a token
+
+Tokens authenticate requests as Bearer credentials. When configuring your MCP client, you'll set the token as an environment variable or directly in the configuration. See the [MCP setup guides](/mcp-setup/overview) for exact instructions per tool.
+
+Your MCP server URL is:
+
+```text
+https://asopp.cc/mcp
+```
+
+## Managing existing tokens
+
+The Tokens page lists all your tokens with the following information:
+
+| Column    | Description                                                     |
+| --------- | --------------------------------------------------------------- |
+| Name      | The label you chose when creating the token                     |
+| Created   | When the token was created                                      |
+| Last used | When the token was last used for a successful call (or "Never") |
+| Status    | `active` or `revoked`                                           |
+
+### Revoking a token
+
+Click the **Revoke** button next to any token to permanently deactivate it. Any MCP client using that token will immediately start receiving `401 Unauthorized` errors.
+
+<Warning>
+  Revoking a token is permanent. You cannot re-activate a revoked token. Create
+  a new one and update your client configuration.
+</Warning>
+
+### Token limits
+
+| Plan    | Max active tokens |
+| ------- | ----------------- |
+| Free    | 3                 |
+| Starter | 10                |
+| Pro     | Unlimited         |
+
+## Security practices
+
+- **One token per environment** — Use separate tokens for development, staging, and production so you can rotate them independently.
+- **One token per tool** — If you use Cursor and Claude Code, give each its own token. That way, if one tool is compromised, you only revoke one.
+- **Never commit tokens to source control** — Use environment variables or a secrets manager.
+- **Audit last-used dates** — Tokens that haven't been used in 30+ days should be revoked to reduce your attack surface.
+
+## Related pages
+
+- [Quickstart](/quickstart) — How to generate your first token and connect a tool
+- [Usage](/portal/usage) — See which token made which calls

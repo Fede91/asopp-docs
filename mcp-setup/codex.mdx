@@ -1,0 +1,105 @@
+---
+title: "Codex"
+description: "Connect ASO++ to OpenAI Codex CLI using MCP server configuration."
+sidebarTitle: "Codex"
+---
+
+[OpenAI Codex CLI](https://github.com/openai/codex) is OpenAI's terminal-based coding agent. It supports MCP servers via a configuration file in your home directory.
+
+## Prerequisites
+
+- Codex CLI installed (`npm install -g @openai/codex`)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open the Codex config file">
+    The Codex configuration file lives at `~/.codex/config.json`. Create it if it doesn't exist.
+
+    ```bash
+    mkdir -p ~/.codex && touch ~/.codex/config.json
+    ```
+
+  </Step>
+
+  <Step title="Add the ASO++ MCP server">
+    Open `~/.codex/config.json` and add:
+
+    ```json
+    {
+      "mcpServers": {
+        "asopp": {
+          "type": "http",
+          "url": "https://asopp.cc/mcp",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN_HERE"
+          }
+        }
+      }
+    }
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+  <Step title="Start a Codex session">
+    Run:
+
+    ```bash
+    codex
+    ```
+
+    Then type a prompt that uses ASO++ tools:
+
+    ```text
+    Find the top competitor keywords for the Duolingo app in the US market
+    ```
+
+    Codex will call `get_competitor_keywords` and return the results.
+
+  </Step>
+</Steps>
+
+## Using environment variables
+
+To keep your token out of the config file:
+
+```json
+{
+  "mcpServers": {
+    "asopp": {
+      "type": "http",
+      "url": "https://asopp.cc/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ASO_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Export the variable in your shell profile:
+
+```bash
+export ASO_TOKEN="your_token_here"
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Codex can't find the ASO++ tools">
+    Run `codex --list-tools` to confirm the MCP server is loaded. If it's
+    missing, double-check the JSON syntax in `~/.codex/config.json`.
+  </Accordion>
+  <Accordion title="Authentication errors">
+    Verify your token is active on the [Tokens page](/portal/tokens). Re-create
+    the token if needed and update `~/.codex/config.json`.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

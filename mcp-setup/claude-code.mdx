@@ -1,0 +1,110 @@
+---
+title: "Claude Code"
+description: "Connect ASO++ to Claude Code using the MCP server configuration."
+sidebarTitle: "Claude Code"
+---
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's terminal-based AI coding agent. It supports MCP servers via a local configuration file.
+
+## Prerequisites
+
+- Claude Code installed (`npm install -g @anthropic-ai/claude-code`)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Add the MCP server">
+    Run the following command in your terminal to register ASO++ as an MCP server:
+
+    ```bash
+    claude mcp add asopp \
+      --transport http \
+      --url https://asopp.cc/mcp \
+      --header "Authorization: Bearer YOUR_TOKEN_HERE"
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+    <Tip>
+      To add it scoped to a specific project rather than globally, run the command from inside the project directory and add `--scope project`.
+    </Tip>
+
+  </Step>
+
+  <Step title="Verify registration">
+    Run:
+
+    ```bash
+    claude mcp list
+    ```
+
+    You should see `asopp` in the list with a `connected` status.
+
+  </Step>
+
+  <Step title="Test in a session">
+    Start a Claude Code session:
+
+    ```bash
+    claude
+    ```
+
+    Then type:
+
+    ```text
+    Run an ASO audit for app 389801252 in the US market
+    ```
+
+    Claude Code will call `aso_audit` and return the results.
+
+  </Step>
+</Steps>
+
+## Manual configuration
+
+If you prefer to edit the config file directly, the global MCP configuration lives at `~/.claude/mcp_servers.json`. Add:
+
+```json
+{
+  "asopp": {
+    "type": "http",
+    "url": "https://asopp.cc/mcp",
+    "headers": {
+      "Authorization": "Bearer YOUR_TOKEN_HERE"
+    }
+  }
+}
+```
+
+## Using environment variables
+
+Store your token securely:
+
+```bash
+export ASO_TOKEN="your_token_here"
+claude mcp add asopp \
+  --transport http \
+  --url https://asopp.cc/mcp \
+  --header "Authorization: Bearer $ASO_TOKEN"
+```
+
+Add `export ASO_TOKEN=...` to your `~/.zshrc` or `~/.bashrc` to persist it across sessions.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Error: server not found">
+    Run `claude mcp list` to confirm the server is registered. If not, repeat
+    the `claude mcp add` step.
+  </Accordion>
+  <Accordion title="401 errors during tool calls">
+    Your token may have been revoked. Go to the [Tokens page](/portal/tokens),
+    create a new token, and re-run `claude mcp add` with the updated value.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

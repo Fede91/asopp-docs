@@ -1,0 +1,129 @@
+---
+title: "VS Code"
+description: "Connect ASO++ to VS Code via the GitHub Copilot MCP or an extension like Cline."
+sidebarTitle: "VS Code"
+---
+
+VS Code supports MCP servers through GitHub Copilot's agent mode (VS Code 1.99+) or through third-party extensions like [Cline](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev).
+
+<Tabs>
+  <Tab title="GitHub Copilot (built-in)">
+    ## Prerequisites
+
+    - VS Code 1.99 or later
+    - GitHub Copilot subscription with agent mode enabled
+    - An ASO++ API token — [generate one here](/portal/tokens)
+
+    ## Configuration
+
+    <Steps>
+      <Step title="Open user settings (JSON)">
+        Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux) and run **Preferences: Open User Settings (JSON)**.
+      </Step>
+
+      <Step title="Add the MCP server">
+        Add the following inside the JSON object:
+
+        ```json
+        {
+          "mcp": {
+            "servers": {
+              "asopp": {
+                "type": "http",
+                "url": "https://asopp.cc/mcp",
+                "headers": {
+                  "Authorization": "Bearer YOUR_TOKEN_HERE"
+                }
+              }
+            }
+          }
+        }
+        ```
+
+        Replace `YOUR_TOKEN_HERE` with your actual token.
+      </Step>
+
+      <Step title="Reload VS Code">
+        Press `Cmd+Shift+P` and run **Developer: Reload Window**.
+      </Step>
+
+      <Step title="Verify in Copilot agent mode">
+        Open a Copilot chat, switch to **Agent** mode, and type:
+
+        ```text
+        Search for keywords related to "fitness tracker" in the US App Store
+        ```
+
+        Copilot should call `search_keywords` and return results.
+      </Step>
+    </Steps>
+
+  </Tab>
+
+  <Tab title="Cline extension">
+    ## Prerequisites
+
+    - VS Code with the [Cline extension](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev) installed
+    - An ASO++ API token — [generate one here](/portal/tokens)
+
+    ## Configuration
+
+    <Steps>
+      <Step title="Open Cline MCP settings">
+        Click the Cline icon in the sidebar, then click the **MCP Servers** tab, then **Edit MCP settings**.
+      </Step>
+
+      <Step title="Add the ASO++ server">
+        In the config file that opens, add:
+
+        ```json
+        {
+          "mcpServers": {
+            "asopp": {
+              "url": "https://asopp.cc/mcp",
+              "headers": {
+                "Authorization": "Bearer YOUR_TOKEN_HERE"
+              }
+            }
+          }
+        }
+        ```
+
+        Replace `YOUR_TOKEN_HERE` with your actual token.
+      </Step>
+
+      <Step title="Restart Cline">
+        Click **Done** or close and reopen the Cline panel to apply the new configuration.
+      </Step>
+
+      <Step title="Verify the connection">
+        Open a Cline chat and type:
+
+        ```text
+        Check the App Store ranking for app 389801252 for the keyword "photo editor" in the US
+        ```
+
+        Cline should invoke `get_app_ranking` and return the result.
+      </Step>
+    </Steps>
+
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The ASO++ tools don't appear in agent mode">
+    Make sure agent mode is enabled in GitHub Copilot settings. Go to **Settings
+    → Extensions → GitHub Copilot** and ensure **Agent mode** is turned on.
+  </Accordion>
+  <Accordion title="Connection refused or timeout">
+    Confirm your token is active on the [Tokens page](/portal/tokens). Also
+    check that your VS Code version is 1.99 or later for built-in MCP support.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

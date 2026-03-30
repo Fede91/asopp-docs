@@ -1,0 +1,102 @@
+---
+title: "Gemini CLI"
+description: "Connect ASO++ to Gemini CLI using MCP server configuration."
+sidebarTitle: "Gemini CLI"
+---
+
+[Gemini CLI](https://github.com/google-gemini/gemini-cli) is Google's command-line AI agent. It supports MCP servers via a `settings.json` configuration file.
+
+## Prerequisites
+
+- Gemini CLI installed — follow the [official install guide](https://github.com/google-gemini/gemini-cli)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open the Gemini settings file">
+    The configuration file is at `~/.gemini/settings.json`. Create it if it doesn't exist:
+
+    ```bash
+    mkdir -p ~/.gemini && touch ~/.gemini/settings.json
+    ```
+
+  </Step>
+
+  <Step title="Add the ASO++ MCP server">
+    Edit `~/.gemini/settings.json` and add:
+
+    ```json
+    {
+      "mcpServers": {
+        "asopp": {
+          "httpUrl": "https://asopp.cc/mcp",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN_HERE"
+          }
+        }
+      }
+    }
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+  <Step title="Start a session and verify">
+    Run:
+
+    ```bash
+    gemini
+    ```
+
+    Then type:
+
+    ```text
+    What is the popularity score for the keyword "budget tracker" in the US App Store?
+    ```
+
+    Gemini CLI should call `get_keyword_popularity` and return the score.
+
+  </Step>
+</Steps>
+
+## Project-level configuration
+
+To use a different token or configuration per project, create a `.gemini/settings.json` file inside your project directory. Gemini CLI merges project-level settings with your global settings, with project settings taking priority.
+
+## Using environment variables
+
+```json
+{
+  "mcpServers": {
+    "asopp": {
+      "httpUrl": "https://asopp.cc/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ASO_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Set `ASO_TOKEN` in your shell profile and restart your terminal.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Tools aren't available in the session">
+    Run `gemini --print-config` to see the effective configuration. Confirm the
+    `asopp` server appears under `mcpServers`.
+  </Accordion>
+  <Accordion title="Connection timeout">
+    Some ASO++ tools (like `aso_audit`) take up to 30 seconds. Gemini CLI's
+    default timeout may be too short. Set `"mcpTimeout": 60000` (milliseconds)
+    in your settings.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

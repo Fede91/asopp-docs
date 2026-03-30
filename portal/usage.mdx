@@ -1,0 +1,77 @@
+---
+title: "Usage"
+description: "Track your MCP tool call history and monthly quota consumption."
+---
+
+The Usage page gives you a detailed breakdown of every API call your tokens have made, and how much of your monthly quota you've consumed.
+
+## Quota summary
+
+At the top of the page, a banner shows:
+
+- **Calls used** this billing cycle
+- **Calls remaining** before you hit your plan limit
+- **Reset date** — the first day of next month when your quota refreshes
+
+<Tip>
+  If you're on the Free plan and running low, you can upgrade at any time during the month. Your remaining calls on the new plan are available immediately.
+</Tip>
+
+## Usage chart
+
+A bar chart visualizes daily call volume over the past 30 days. Hover over any bar to see the exact count for that day.
+
+The chart is broken down by tool name so you can see which tools you use most:
+
+| Tool | Typical use case |
+|------|-----------------|
+| `aso_audit` | Full audits — high call weight |
+| `search_keywords` | Keyword discovery |
+| `get_keyword_popularity` | Popularity scoring |
+| `get_app_ranking` | Rank checks |
+| `get_competitor_keywords` | Competitor analysis |
+| `get_app_reviews` | Review monitoring |
+| `track_keyword` | Adding keywords to tracking |
+| `get_tracking_history` | Reading ranking history |
+| `get_app_details` | App metadata lookups |
+
+## Call log
+
+Below the chart, a paginated table lists every tool call in reverse chronological order. Each row shows:
+
+- **Timestamp** — Date and time of the call (in your local timezone)
+- **Tool** — Name of the MCP tool invoked
+- **Token** — The token name used (not the raw value)
+- **App / Keyword** — Primary input parameter from the call
+- **Country** — The App Store country code used
+- **Status** — `success`, `quota_exceeded`, or `error`
+
+### Filtering
+
+Use the filters above the table to narrow results:
+
+- Filter by **token name** to see usage from a specific integration
+- Filter by **tool** to focus on one type of call
+- Filter by **status** to find errors or quota hits
+- Set a **date range** to look at a specific period
+
+### Exporting
+
+Click **Export CSV** to download the full call log for the current filter selection. The export includes all columns shown in the table.
+
+## Quota limits by plan
+
+| Plan | Calls per month | Keywords tracked |
+|------|----------------|-----------------|
+| Free | 50 | 5 |
+| Starter | TBD | 20 |
+| Pro | TBD | 50 |
+
+<Note>
+  Calls that return an error due to invalid input still count against your quota. Calls that fail due to a server-side error do not.
+</Note>
+
+## Related pages
+
+- [Dashboard](/portal/dashboard) — Monthly summary and quick stats
+- [Billing](/portal/billing) — Upgrade your plan if you need more calls

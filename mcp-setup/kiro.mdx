@@ -1,0 +1,82 @@
+---
+title: "Kiro"
+description: "Connect ASO++ to Kiro using the MCP server configuration."
+sidebarTitle: "Kiro"
+---
+
+[Kiro](https://kiro.dev) is AWS's AI IDE. It supports MCP servers via a configuration file in the `.kiro` project directory or your global Kiro settings.
+
+## Prerequisites
+
+- Kiro installed — download from [kiro.dev](https://kiro.dev)
+- An ASO++ API token — [generate one here](/portal/tokens)
+
+## Configuration
+
+<Steps>
+  <Step title="Open MCP settings">
+    In Kiro, open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) and run **Kiro: Open MCP Configuration**.
+
+    This opens the `mcp.json` settings file.
+
+  </Step>
+
+  <Step title="Add the ASO++ server">
+    Add the following to the `mcpServers` object:
+
+    ```json
+    {
+      "mcpServers": {
+        "asopp": {
+          "url": "https://asopp.cc/mcp",
+          "transport": "http",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN_HERE"
+          }
+        }
+      }
+    }
+    ```
+
+    Replace `YOUR_TOKEN_HERE` with your actual token.
+
+  </Step>
+
+<Step title="Reload Kiro">
+  Press `Cmd+Shift+P` and run **Developer: Reload Window** to apply the changes.
+</Step>
+
+  <Step title="Verify the connection">
+    Open a Kiro agent chat and type:
+
+    ```text
+    Search for keywords related to "habit tracker" in the US App Store
+    ```
+
+    Kiro should invoke `search_keywords` and return results.
+
+  </Step>
+</Steps>
+
+## Project-level configuration
+
+To scope the configuration to a single project, create a `.kiro/mcp.json` file in your project root instead of editing the global settings. This file follows the same format.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="ASO++ tools don't appear in Kiro's tool list">
+    Open **Kiro Settings → MCP Servers** and look for an error indicator next to
+    `asopp`. Hover over it to see the error message.
+  </Accordion>
+  <Accordion title="Tool calls return 401">
+    Your token may be expired or revoked. Go to the [Tokens
+    page](/portal/tokens), revoke the old token, create a new one, and update
+    the `Authorization` header in `mcp.json`.
+  </Accordion>
+</AccordionGroup>
+
+## Related pages
+
+- [Tokens](/portal/tokens) — Generate or revoke tokens
+- [MCP setup overview](/mcp-setup/overview) — Troubleshooting tips and other supported tools

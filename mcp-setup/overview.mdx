@@ -1,0 +1,81 @@
+---
+title: "MCP setup overview"
+description: "How to connect ASO++ to any MCP-compatible AI tool or editor."
+---
+
+ASO++ works as an MCP server — a standardized protocol that lets AI tools call external services as tools. Once connected, your AI assistant can search keywords, audit your app, and track rankings without leaving your editor.
+
+## What you need
+
+Before configuring any tool, you'll need:
+
+1. **An ASO++ account** — [Sign up here](https://asopp.cc/sign-up)
+2. **An API token** — Generate one on the [Tokens page](/portal/tokens)
+3. **Your MCP server URL:**
+
+```text
+https://asopp.cc/mcp
+```
+
+## How it works
+
+ASO++ uses HTTP with Server-Sent Events (SSE) as the MCP transport. Most modern MCP clients support this out of the box. Your token is passed as a `Bearer` authorization header with each request.
+
+## Supported tools
+
+<CardGroup cols={2}>
+  <Card title="Cursor" icon="arrow-pointer" href="/mcp-setup/cursor">
+    The AI code editor with built-in MCP support
+  </Card>
+  <Card title="Claude Code" icon="terminal" href="/mcp-setup/claude-code">
+    Anthropic's terminal-based AI coding agent
+  </Card>
+  <Card title="VS Code" icon="code" href="/mcp-setup/vscode">
+    Via the Cline or Continue extension
+  </Card>
+  <Card title="Codex" icon="robot" href="/mcp-setup/codex">
+    OpenAI's coding agent
+  </Card>
+  <Card title="Gemini CLI" icon="sparkles" href="/mcp-setup/gemini-cli">
+    Google's command-line AI tool
+  </Card>
+  <Card title="Windsurf" icon="wind" href="/mcp-setup/windsurf">
+    Codeium's AI editor
+  </Card>
+  <Card title="Goose" icon="feather" href="/mcp-setup/goose">
+    Block's open-source AI agent
+  </Card>
+  <Card title="Factory" icon="industry" href="/mcp-setup/factory">
+    AI software engineering platform
+  </Card>
+  <Card title="OpenCode" icon="brackets-curly" href="/mcp-setup/opencode">
+    The open-source terminal AI coding agent
+  </Card>
+  <Card title="Kiro" icon="circle-nodes" href="/mcp-setup/kiro">
+    AWS's AI IDE
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My AI assistant says it can't find the ASO++ tools">
+    Make sure your MCP server URL and token are correct. Try calling a simple tool like `get_app_details` with a known app ID to verify the connection. Check the [Tokens page](/portal/tokens) to confirm your token is active.
+  </Accordion>
+
+<Accordion title="I'm getting 401 Unauthorized errors">
+  Your token is invalid or has been revoked. Go to the [Tokens
+  page](/portal/tokens), revoke the old token, create a new one, and update your
+  client configuration.
+</Accordion>
+
+<Accordion title="I'm getting quota exceeded errors">
+  You've used all your monthly calls. Check the [Usage page](/portal/usage) to
+  see your current consumption. You can upgrade your plan on the [Billing
+  page](/portal/billing) to get more calls immediately.
+</Accordion>
+
+  <Accordion title="The connection times out">
+    Some tools (like `aso_audit`) can take up to 30 seconds to complete. Make sure your MCP client's timeout is set to at least 60 seconds. See your tool's setup guide for the specific setting.
+  </Accordion>
+</AccordionGroup>

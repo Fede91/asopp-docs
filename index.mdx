@@ -1,97 +1,55 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "ASO++"
+description: "App Store Optimization data as MCP tools — directly inside your AI coding environment."
 ---
 
-## Setting up
+## What is ASO++?
 
-Get your documentation site up and running in minutes.
+ASO++ is an MCP server that brings App Store Optimization data directly into the AI tools you already use — Cursor, Claude Code, VS Code, and more. Instead of switching between dashboards, you can research keywords, audit your app, and track rankings without leaving your editor.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Create an account, generate a token, and connect to your first MCP client in
+    under 5 minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Portal" icon="gauge" href="/portal/dashboard">
+    Learn how the dashboard, usage tracking, token management, and billing work.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="MCP setup" icon="plug" href="/mcp-setup/overview">
+    Step-by-step instructions for every supported AI tool and editor.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Support" icon="envelope" href="mailto:support@asopp.cc">
+    Reach out if you run into anything — we reply fast.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Available MCP tools
 
-Everything you need to create world-class documentation.
+Once connected, your AI assistant can call these tools on your behalf:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+| Tool                      | What it does                                             |
+| ------------------------- | -------------------------------------------------------- |
+| `search_keywords`         | Find ASO keywords for a given query and country          |
+| `get_keyword_popularity`  | Get popularity score and trend for a keyword             |
+| `get_app_ranking`         | Check where your app ranks for a keyword                 |
+| `get_app_details`         | Fetch app metadata: title, description, ratings          |
+| `get_competitor_keywords` | Discover keywords a competitor ranks for                 |
+| `get_app_reviews`         | Retrieve recent reviews for any app                      |
+| `track_keyword`           | Start tracking a keyword for your app                    |
+| `get_tracking_history`    | View ranking history for tracked keywords                |
+| `aso_audit`               | Run a full ASO audit and get prioritized recommendations |
 
-## Need inspiration?
+## Supported tools and editors
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={3}>
+  <Card title="Cursor" icon="arrow-pointer" href="/mcp-setup/cursor" />
+  <Card title="Claude Code" icon="terminal" href="/mcp-setup/claude-code" />
+  <Card title="VS Code" icon="code" href="/mcp-setup/vscode" />
+  <Card title="Codex" icon="robot" href="/mcp-setup/codex" />
+  <Card title="Gemini CLI" icon="sparkles" href="/mcp-setup/gemini-cli" />
+  <Card title="Windsurf" icon="wind" href="/mcp-setup/windsurf" />
+  <Card title="Goose" icon="feather" href="/mcp-setup/goose" />
+  <Card title="Factory" icon="industry" href="/mcp-setup/factory" />
+  <Card title="OpenCode" icon="brackets-curly" href="/mcp-setup/opencode" />
+  <Card title="Kiro" icon="circle-nodes" href="/mcp-setup/kiro" />
+</CardGroup>
