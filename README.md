@@ -1,55 +1,57 @@
-# Mintlify Starter Kit
+# ASO++ Docs Site
 
-Use the starter kit to get your docs deployed and ready to customize.
+Next.js documentation site converted from the Mintlify source.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Stack
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
-
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
-
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
-
-```bash
-npx skills add https://mintlify.com/docs
-```
-
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
-
-See the [AI tools guides](/ai-tools) for tool-specific setup.
+- **Next.js 16** (App Router, static export)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **next-themes** — light/dark mode
 
 ## Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
-npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
-mint dev
+```bash
+npm install
+npm run dev       # http://localhost:3000
 ```
 
-View your local preview at `http://localhost:3000`.
+## Build
 
-## Publishing changes
+```bash
+npm run build
+npm run start
+```
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+## Structure
 
-## Need help?
+```
+src/
+  app/                    # All routes (App Router)
+    page.tsx              # Home / index page
+    quickstart/           # /quickstart
+    portal/               # /portal/*
+    mcp-setup/            # /mcp-setup/*
+    layout.tsx            # Root layout with theme provider + docs layout
+  components/
+    docs/                 # Layout components (Navbar, Sidebar, TOC, Footer, PageNav)
+    mdx/                  # Custom MDX-equivalent components
+      Card.tsx            # <Card> and <CardGroup>
+      Accordion.tsx       # <Accordion> and <AccordionGroup>
+      Steps.tsx           # <Steps> and <Step>
+      Tabs.tsx            # <Tabs> and <Tab>
+      Callouts.tsx        # <Note>, <Tip>, <Warning>, <Info>
+      Icons.tsx           # All SVG icons used in docs
+  lib/
+    navigation.ts         # Nav structure derived from docs.json
+public/
+  logo/                   # light.svg and dark.svg logos
+  images/                 # Hero images
+  favicon.svg
+```
 
-### Troubleshooting
+## Adding a new page
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+1. Create a new `page.tsx` in the appropriate `app/` directory
+2. Wrap content in `<DocPage title="..." description="..." href="/your-path">`
+3. Add the page to `src/lib/navigation.ts` in the correct group
