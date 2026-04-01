@@ -1,0 +1,251 @@
+# ASO++
+
+> ASO++ is an MCP (Model Context Protocol) server that delivers App Store Optimization data directly into AI coding environments — Cursor, Claude Code, VS Code, Windsurf, Goose, Codex, Gemini CLI, Factory, OpenCode, and Kiro.
+
+ASO++ exposes iOS App Store data as callable MCP tools. Once connected, an AI assistant can search keywords, check rankings, audit apps, track keyword positions over time, and analyze competitors — without leaving the editor.
+
+---
+
+## Getting started
+
+- **Sign up:** https://asopp.cc/sign-up
+- **MCP server URL:** `https://asopp.cc/mcp`
+- **Transport:** HTTP with Server-Sent Events (SSE)
+- **Authentication:** Bearer token in the `Authorization` header
+
+### Quickstart (5 minutes)
+
+1. Create an account at https://asopp.cc
+2. Go to **Tokens** → **New token** → copy the token (shown once only)
+3. Add the MCP server to your AI tool (see setup guides below)
+4. Ask your assistant: `Run an ASO audit for app ID 123456789 in the US market`
+
+### MCP client configuration (universal pattern)
+
+```json
+{
+  "mcpServers": {
+    "asopp": {
+      "url": "https://asopp.cc/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN_HERE"
+      }
+    }
+  }
+}
+```
+
+---
+
+## MCP tools reference
+
+All tools are called automatically by the AI assistant. The assistant picks the right tool based on the user's intent.
+
+### Core tools (available now)
+
+#### `search_keywords`
+Find ASO keywords for a given search query and country.
+- **Inputs:** `query` (string), `country` (ISO 2-letter code, e.g. `"us"`)
+- **Returns:** List of keyword suggestions with popularity scores
+- **Quota cost:** 1 call
+- **Example prompt:** "Find keywords for a fitness app in the US App Store"
+
+#### `get_keyword_popularity`
+Get the popularity score and trend for one or more keywords.
+- **Inputs:** `keywords` (array of strings), `country` (ISO 2-letter code)
+- **Returns:** Popularity score (0–100) and trend direction per keyword
+- **Quota cost:** 1 call
+- **Example prompt:** "How popular is the keyword 'photo editor' in the UK?"
+
+#### `get_app_ranking`
+Check where a specific app ranks for a given keyword.
+- **Inputs:** `adamId` (numeric App Store ID), `keyword` (string), `country` (ISO 2-letter code)
+- **Returns:** Rank position and total result count for the keyword
+- **Quota cost:** 1 call
+- **Example prompt:** "Where does app 123456789 rank for 'workout tracker' in the US?"
+
+#### `get_app_details`
+Fetch metadata for any iOS app: title, subtitle, description, rating, review count, price, category.
+- **Inputs:** `adamId` (numeric App Store ID), `country` (ISO 2-letter code, optional, default `"us"`)
+- **Returns:** Full app metadata object
+- **Quota cost:** 1 call
+- **Example prompt:** "Get the details for app 123456789"
+
+#### `get_competitor_keywords`
+Discover the keywords a competitor app ranks for.
+- **Inputs:** `adamId` (numeric App Store ID of the competitor), `country` (ISO 2-letter code)
+- **Returns:** List of keywords the competitor appears in search results for
+- **Quota cost:** 1 call
+- **Example prompt:** "What keywords does app 987654321 rank for in Germany?"
+
+#### `get_app_reviews`
+Retrieve the most recent reviews for any iOS app.
+- **Inputs:** `adamId` (numeric App Store ID), `country` (ISO 2-letter code)
+- **Returns:** List of recent reviews with rating, title, and body
+- **Quota cost:** 1 call
+- **Example prompt:** "Show me recent reviews for app 123456789 in the US"
+
+#### `track_keyword`
+Start tracking a keyword for a specific app. Ranking data is recorded automatically over time.
+- **Inputs:** `keyword` (string), `country` (ISO 2-letter code), `adamId` (numeric App Store ID)
+- **Returns:** Confirmation with tracking start date
+- **Quota cost:** 0 (DB-only operation, does not consume quota)
+- **Example prompt:** "Track the keyword 'meditation app' for app 123456789 in the US"
+
+#### `get_tracking_history`
+View the ranking history for all tracked keywords or a specific keyword.
+- **Inputs:** `keyword` (string, optional), `country` (ISO 2-letter code, optional), `adamId` (numeric App Store ID, optional)
+- **Returns:** Time-series of rank positions with timestamps
+- **Quota cost:** 1 call
+- **Example prompt:** "Show me the ranking history for 'meditation app' on app 123456789"
+
+#### `aso_audit`
+Run a full App Store Optimization audit for an app and receive prioritized recommendations.
+- **Inputs:** `adamId` (numeric App Store ID), `country` (ISO 2-letter code)
+- **Returns:** Scored audit report with actionable recommendations sorted by impact
+- **Quota cost:** Multiple calls (orchestrated workflow — up to ~5 quota units)
+- **Timeout note:** Can take up to 30 seconds; set your MCP client timeout to at least 60 seconds
+- **Example prompt:** "Run an ASO audit for app 123456789 in the US market"
+
+---
+
+### Upcoming tools (in development)
+
+#### `list_tracked_keywords`
+List all keywords currently being tracked, with the latest rank for each.
+- **Inputs:** None
+- **Returns:** `{ tracked: [{ keyword, country, adamId, trackedSince, latestRank, latestRankDate }], count: N }`
+- **Quota cost:** 0
+
+#### `untrack_keyword`
+Remove a keyword from tracking.
+- **Inputs:** `keyword`, `country`, `adamId`
+- **Returns:** `{ removed: true | false }`
+- **Quota cost:** 0
+
+#### `search_apps`
+Search for iOS apps by name or keyword via the iTunes Search API.
+- **Inputs:** `query`, `country`, `limit` (1–25, default 10)
+- **Returns:** List of apps with adamId, title, developer, rating, price, category
+- **Quota cost:** 1 call
+
+#### `get_top_charts`
+Get the top 100 free, paid, or grossing apps in a country and optional category.
+- **Inputs:** `country`, `chartType` (`free` | `paid` | `grossing`), `genreId` (optional), `limit` (1–100)
+- **Returns:** Ranked list with adamId, title, developer, category
+- **Quota cost:** 1 call
+- **Common genreId values:** Games=6014, Productivity=6007, Business=6000, Health & Fitness=6013
+
+#### `get_app_ranking_bulk`
+Check rankings for one app across multiple keywords in a single call.
+- **Inputs:** `adamId`, `keywords` (array, max 10), `country`
+- **Returns:** Ranking result per keyword; partial success supported
+- **Quota cost:** 1 per keyword (pre-checked before execution)
+
+#### `get_localized_metadata`
+Fetch app metadata across multiple countries in one call.
+- **Inputs:** `adamId`, `countries` (array, max 10)
+- **Returns:** Per-country metadata: title, subtitle, rating, ratingCount, price
+- **Quota cost:** 1 per country
+
+#### `get_app_reviews_extended`
+Fetch up to ~100 reviews (10 pages × 10 reviews) for deeper analysis.
+- **Inputs:** `adamId`, `country`, `maxPages` (1–10, default 5)
+- **Returns:** Deduplicated reviews with total fetched and pages read
+- **Quota cost:** 1 call (flat, regardless of pages fetched)
+
+#### `compare_apps`
+Side-by-side metadata and rating comparison of two apps.
+- **Inputs:** `adamIdA`, `adamIdB`, `country`
+- **Returns:** Both apps' details plus deltas: ratingDelta, priceDelta, ratingCountDelta, sameDeveloper, sameCategory
+- **Quota cost:** 2 calls
+
+#### `keyword_gap_analysis`
+Find keywords a competitor ranks for that your app doesn't.
+- **Inputs:** `adamIdTarget`, `adamIdCompetitor`, `country`
+- **Returns:** Gap keywords sorted by popularity score, plus opportunity keywords
+- **Quota cost:** 4 calls (orchestrated: competitor keywords × 2 + suggestions + popularity)
+
+#### `localization_audit`
+Analyze an app's metadata and ratings across multiple countries to surface localization gaps.
+- **Inputs:** `adamId`, `countries` (array, 2–10, default `["us","gb","de","fr","it"]`)
+- **Returns:** Per-country: title, subtitle, isLocalized, rating, ratingAlert; plus recommendations
+- **Quota cost:** 1 per country
+
+---
+
+## Usage and quota
+
+| Plan    | Calls per month | Keywords tracked | Max tokens |
+| ------- | --------------- | ---------------- | ---------- |
+| Free    | 50              | 5                | 3          |
+| Starter | TBD             | 20               | 10         |
+| Pro     | TBD             | 50               | Unlimited  |
+
+- Quota resets on the first day of each calendar month
+- DB-only tools (`track_keyword`, `list_tracked_keywords`, `untrack_keyword`) do not consume quota
+- Calls that fail due to invalid input still consume quota; server-side errors do not
+- Orchestrated tools (`aso_audit`, `keyword_gap_analysis`, etc.) pre-check quota before executing
+
+---
+
+## Setup guides
+
+Step-by-step connection instructions for every supported AI tool:
+
+- **Cursor** — https://docs.asopp.cc/mcp-setup/cursor
+- **Claude Code** — https://docs.asopp.cc/mcp-setup/claude-code
+- **VS Code** (Cline / Continue) — https://docs.asopp.cc/mcp-setup/vscode
+- **Windsurf** — https://docs.asopp.cc/mcp-setup/windsurf
+- **Codex** (OpenAI) — https://docs.asopp.cc/mcp-setup/codex
+- **Gemini CLI** — https://docs.asopp.cc/mcp-setup/gemini-cli
+- **Goose** (Block) — https://docs.asopp.cc/mcp-setup/goose
+- **Factory** — https://docs.asopp.cc/mcp-setup/factory
+- **OpenCode** — https://docs.asopp.cc/mcp-setup/opencode
+- **Kiro** (AWS) — https://docs.asopp.cc/mcp-setup/kiro
+
+---
+
+## Portal
+
+The ASO++ portal at https://asopp.cc lets you manage your account:
+
+- **Dashboard** — Plan status, monthly quota bar, recent tool call activity
+- **Usage** — Per-day call volume chart, full paginated call log, CSV export; filter by token, tool, status, or date range
+- **Tokens** — Create named API tokens (one per tool/environment recommended); revoke without affecting others; last-used timestamps
+- **Billing** — Upgrade plan or update payment details
+- **Profile** — Account settings
+
+---
+
+## Key concepts
+
+**adamId** — The numeric App Store identifier for any iOS app. Find it in App Store Connect, or in the App Store URL: `apps.apple.com/app/id<adamId>`.
+
+**country** — ISO 3166-1 alpha-2 code for the App Store storefront (e.g. `"us"`, `"gb"`, `"de"`, `"fr"`, `"it"`, `"jp"`). Most tools default to `"us"` when omitted.
+
+**popularity score** — A proxy metric (0–100) derived from iTunes Search result counts. Higher = more search volume for that keyword.
+
+**quota** — Monthly API call budget. Resets on the 1st of each month. Orchestrated tools (like `aso_audit`) consume multiple quota units in a single user request.
+
+**MCP transport** — ASO++ uses HTTP + SSE (not stdio). Set your MCP client timeout to at least 60 seconds for orchestrated tools.
+
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Tools not visible in assistant | Wrong URL or token | Verify `https://asopp.cc/mcp` and token on the Tokens page |
+| `401 Unauthorized` | Token revoked or wrong | Revoke and create a new token; update client config |
+| `quota_exceeded` error | Monthly limit reached | Check Usage page; upgrade plan on Billing page |
+| Connection timeout | Slow orchestrated tool | Set MCP client timeout to ≥ 60 seconds |
+| `VALIDATION_ERROR` | Invalid input parameter | Check adamId is numeric; country is 2-letter ISO code |
+
+---
+
+## Support
+
+- Email: support@asopp.cc
+- Docs: https://docs.asopp.cc
+- Sign up: https://asopp.cc/sign-up
